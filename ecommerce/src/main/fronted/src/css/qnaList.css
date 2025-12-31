@@ -1,0 +1,83 @@
+/* 화면 전체 덮는 배경 */
+.qna-modal-overlay {
+  position: fixed;
+  inset: 0; /* top:0, right:0, bottom:0, left:0 */
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999; /* 다른 것들 위로 */
+}
+
+/* 가운데 모달 박스 */
+.qna-modal-container {
+  background: #ffffff;
+  border-radius: 10px;
+  padding: 20px 24px;
+  width: 600px;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+}
+
+/* 헤더 (타이틀 + 닫기 버튼) */
+.qna-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.qna-modal-close-btn {
+  border: none;
+  background: transparent;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+/* 내용 스크롤 영역 */
+.qna-modal-body {
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+/* QnA 한 블럭 */
+.qna-item {
+  border: 1px solid #eee;
+  border-radius: 6px;
+  padding: 10px 12px;
+  margin-bottom: 8px;
+}
+
+.qna-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 600;
+  margin: 3px 0;
+}
+
+.qna-title-text {
+  font-size: 14px;
+}
+
+.qna-secret-badge {
+  font-size: 11px;
+  padding: 2px 6px;
+  border-radius: 999px;
+  background: #ffebef;
+  color: #c4003a;
+}
+
+.qna-content {
+  font-size: 13px;
+  margin-bottom: 6px;
+}
+
+.qna-meta {
+  font-size: 11px;
+  color: #777;
+  display: flex;
+  justify-content: space-between;
+}

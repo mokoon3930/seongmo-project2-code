@@ -1,0 +1,42 @@
+<div class="graph-body">
+  <div class="graph-filter">
+    <div class="filter-group">
+      <label>타입</label>
+      <select id="typeSelect">
+        <option value="ALL">전체</option>
+        <option value="INCOME">수입</option>
+        <option value="EXPENSE">지출</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label>카테고리</label>
+      <select id="categorySelect">
+        <option value="">전체 카테고리</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label>기간 설정</label>
+      <select id="dateMode">
+        <option value="ALL">전체 기간</option>
+        <option value="RANGE">기간 선택</option>
+      </select>
+    </div>
+
+    <div class="filter-group date-inputs">
+      <input type="date" id="fromDate" disabled />
+      <span>~</span>
+      <input type="date" id="toDate" disabled />
+    </div>
+
+    <button type="button" id="searchBtn" class="btn-refresh">조회</button>
+  </div>
+
+  <div class="chart-container">
+    <canvas id="line-chart"></canvas>
+  </div>
+</div>
+<script th:inline="javascript">
+  window.chartData = /*[[${chartData}]]*/ [];
+</script>

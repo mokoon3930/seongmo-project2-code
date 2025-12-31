@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.java.ecommerce.crm.dao.NotificationDAO">
+
+    <!-- 🔹 receiverId 기준 알림 목록 조회 -->
+    <select id="selectNoti" resultType="NotificationDTO">
+        SELECT
+        n.noti_id     AS notiId,
+        n.sender_id   AS senderId,
+        n.receiver_id AS receiverId,
+        n.booking_id  AS bookingId,
+        n.qna_id      AS qnaId,
+        b.rr_id       AS rrId,
+        COALESCE(r.location_id, q.location_id) AS locationId,
+        n.message,
+        n.is_read     AS isRead,
+        n.created_at  AS createdAt
+        FROM notification n
+        LEFT JOIN booking b
+        ON n.booking_id = b.booking_id
+        LEFT JOIN rent_reservation r
+        ON b.rr_id = r.rr_id
+        LEFT JOIN qna q
+        ON n.qna_id = q.qna_id
+        WHERE n.receiver_id = #{receiverId}
+        ORDER BY n.created_at DESC
+    </select>
+
+    <update id="updateIsRead">
+        UPDATE notification
+        SET is_read = #{isRead}
+        WHERE noti_id = #{notiId}
+    </update>
+
+    <delete id="notiAllDelete" parameterType="int">
+        DELETE FROM notification WHERE receiver_id = #{receiverId}
+    </delete>
+
+    <delete id="notiSelectDelete" parameterType="int">
+        DELETE FROM notification WHERE noti_id = #{notiId}
+    </delete>
+
+    <select id="findLatestByBookingId" resultType="com.java.ecommerce.crm.model.dto.NotificationDTO">
+        SELECT
+        n.noti_id      AS notiId,
+        n.sender_id    AS senderId,
+        n.receiver_id  AS receiverId,
+        n.booking_id   AS bookingId,
+        rr.rr_id       AS rrId,
+        rr.location_id AS locationId,
+        n.message,
+        n.is_read      AS isRead,
+        n.created_at   AS createdAt
+        FROM notification n
+        JOIN booking bk      ON n.booking_id = bk.booking_id
+        JOIN rent_reservation rr ON bk.rr_id = rr.rr_id
+        WHERE bk.booking_id = #{bookingId}
+        ORDER BY n.noti_id DESC
+        LIMIT 1
+    </select>
+
+</mapper>

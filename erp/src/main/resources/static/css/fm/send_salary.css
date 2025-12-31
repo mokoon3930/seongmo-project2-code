@@ -1,0 +1,170 @@
+/* =========================================
+   급여 명세서 발송 목록 (send_salary) 스타일
+   - allSalary 페이지 톤&매너 기반
+   ========================================= */
+
+/* 카드 컨테이너 (layout/layout 안쪽에 들어간다고 가정) */
+.erp-card,
+.send-salary-card {
+  background-color: #fff;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  min-height: 600px;
+}
+
+/* 상단 제목이 없으면 버튼/테이블이 너무 떠보여서 여백 기준만 잡아줌 */
+.send-salary-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+
+/* "목록으로" 버튼 */
+.btn-back {
+  height: 38px;
+  padding: 0 18px;
+  background-color: #34495e;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 700;
+}
+.btn-back:hover {
+  background-color: #2c3e50;
+}
+
+/* 테이블 공통 */
+.styled-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+  margin-bottom: 25px;
+  font-size: 0.95rem;
+  border: 1px solid #eee;
+  border-radius: 6px;
+  overflow: hidden; /* radius 적용용 */
+}
+
+/* 헤더 */
+.styled-table thead tr {
+  background-color: #34495e;
+  color: #fff;
+  text-align: center;
+}
+
+.styled-table th,
+.styled-table td {
+  padding: 12px 15px;
+  border-bottom: 1px solid #eee;
+  vertical-align: middle;
+}
+
+/* 기본은 가운데 정렬 */
+.styled-table td {
+  text-align: center;
+}
+
+/* 행 hover */
+.styled-table tbody tr:hover {
+  background-color: #f1f1f1;
+}
+
+/* 금액 스타일(초록 포인트) */
+.money {
+  color: #27ae60;
+  font-weight: 600;
+  font-family: "Consolas", monospace;
+}
+
+/* 날짜 스타일 살짝 차분하게 */
+.date-text {
+  color: #2c3e50;
+  font-weight: 600;
+}
+
+/* 빈 데이터 문구 */
+.empty-row {
+  text-align: center;
+  padding: 30px 0;
+  color: #7f8c8d;
+}
+
+/* =========================
+   Pagination (allSalary와 동일 톤)
+   ========================= */
+nav {
+  display: flex;
+  justify-content: center;
+}
+
+.pagination {
+  display: flex;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  gap: 6px;
+}
+
+.page-link {
+  display: block;
+  padding: 8px 14px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  color: #555;
+  text-decoration: none;
+  background-color: #fff;
+  transition: 0.2s;
+  font-weight: 500;
+}
+
+.page-link:hover {
+  background-color: #eee;
+  color: #333;
+}
+
+.page-item.active .page-link {
+  background-color: #3498db;
+  border-color: #3498db;
+  color: #fff;
+  pointer-events: none;
+}
+
+.page-item.disabled .page-link {
+  color: #ccc;
+  background-color: #f9f9f9;
+  border-color: #eee;
+  pointer-events: none;
+  cursor: default;
+}
+
+/* =========================
+   반응형
+   ========================= */
+@media (max-width: 768px) {
+  .erp-card,
+  .send-salary-card {
+    padding: 18px;
+  }
+
+  .styled-table {
+    font-size: 0.9rem;
+  }
+
+  .styled-table th,
+  .styled-table td {
+    padding: 10px 8px;
+  }
+
+  .btn-back {
+    width: 100%;
+  }
+
+  .send-salary-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+}

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+
+
+<th:block layout:fragment="css"><link rel="stylesheet" th:href="@{/css/financial.css}"></th:block>
+
+
+<div layout:fragment="content">
+    <h2>개인 급여 지급 List</h2>
+<table border="1">
+    <thead>
+    <tr>
+        <th>급여 ID</th>
+        <th>공제 금액(3.3%)</th>
+        <th>총 지급액</th>
+        <th>지급 일</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="salary : ${salary}">
+        <td>
+            <div th:text="${salary.salaryId}"></div>
+        </td>
+        <td>
+            <div th:text="${salary.deduction}"></div>
+        </td>
+        <td>
+            <div th:text="${salary.totalSalary}"></div>
+        </td>
+        <td>
+            <div th:text="${salary.salaryDate}"></div>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+</div>
+</html>

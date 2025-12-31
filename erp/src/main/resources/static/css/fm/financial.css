@@ -1,0 +1,343 @@
+/* =========================================
+   재무 관리 (Financial) 스타일
+   ========================================= */
+
+/* 기본 컨테이너 (카드 스타일) */
+.erp-card {
+  background-color: #fff;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.erp-card h2 {
+  color: #34495e;
+  margin-bottom: 20px;
+  border-left: 5px solid #2ecc71; /* 돈과 관련된 초록색 포인트 */
+  padding-left: 15px;
+}
+
+/* 1. 검색 폼 스타일 */
+.search-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  align-items: flex-end; /* 아래쪽 라인 맞춤 */
+  background-color: #f9f9f9;
+  padding: 20px;
+  border-radius: 6px;
+  margin-bottom: 30px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.form-group label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #7f8c8d;
+}
+
+/* 입력창 공통 */
+select,
+input[type="date"] {
+  padding: 8px 12px;
+  border: 1px solid #bdc3c7;
+  border-radius: 4px;
+  outline: none;
+  height: 38px; /* 높이 통일 */
+  box-sizing: border-box;
+}
+
+input[type="date"]:disabled {
+  background-color: #e9ecef;
+  color: #adb5bd;
+  cursor: not-allowed;
+}
+
+/* 날짜 범위 */
+.date-range {
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+}
+
+/* 버튼 스타일 */
+button {
+  height: 38px;
+  padding: 0 20px;
+  border: none;
+  border-radius: 4px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.btn-search {
+  background-color: #34495e;
+  color: white;
+}
+.btn-search:hover {
+  background-color: #2c3e50;
+}
+
+.btn-graph {
+  background-color: #2ecc71; /* 그래프는 초록색 */
+  color: white;
+  margin-left: auto; /* 우측 끝으로 밀기 */
+}
+.btn-graph:hover {
+  background-color: #27ae60;
+}
+
+/* 2. 테이블 스타일 */
+.styled-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 30px;
+  font-size: 0.95rem;
+}
+
+.styled-table thead tr {
+  background-color: #34495e;
+  color: #ffffff;
+  text-align: left;
+}
+
+.styled-table th,
+.styled-table td {
+  padding: 12px 15px;
+  border-bottom: 1px solid #eee;
+}
+
+.styled-table tbody tr:hover {
+  background-color: #f1f1f1;
+}
+
+/* 수입/지출 뱃지 */
+.badge-income {
+  color: #27ae60;
+  font-weight: bold;
+}
+.badge-expense {
+  color: #c0392b;
+  font-weight: bold;
+}
+
+/* 3. 페이징 */
+nav {
+  display: flex;
+  justify-content: center; /* 중앙 정렬 */
+}
+
+.pagination {
+  display: flex;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  gap: 5px; /* 버튼 사이 간격 */
+}
+
+/* 각 페이지 아이템 (li) */
+.page-item {
+  /* 기본 스타일 없음 */
+}
+
+/* 페이지 링크 (a) */
+.page-link {
+  display: block;
+  padding: 8px 14px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  color: #555;
+  text-decoration: none;
+  background-color: #fff;
+  transition: 0.2s;
+  font-weight: 500;
+}
+
+/* 마우스 올렸을 때 */
+.page-link:hover {
+  background-color: #eee;
+  color: #333;
+}
+
+/* 현재 페이지 (Active) */
+.page-item.active .page-link {
+  background-color: #3498db; /* 파란색 배경 */
+  border-color: #3498db;
+  color: #fff; /* 흰색 글씨 */
+  pointer-events: none; /* 클릭 방지 */
+}
+
+/* 비활성화 버튼 (Disabled) - 이전/다음 없을 때 */
+.page-item.disabled .page-link {
+  color: #ccc;
+  background-color: #f9f9f9;
+  border-color: #eee;
+  pointer-events: none; /* 클릭 불가 */
+  cursor: default;
+}
+
+/* =========================================
+   4. 모달 (Custom Modal) 껍데기 스타일
+   ========================================= */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 9999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 1;
+  transition: opacity 0.3s;
+}
+
+.modal-overlay.hidden {
+  display: none;
+  opacity: 0;
+}
+
+.modal-content {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.graph-modal-size {
+  width: 800px; /* 그래프니까 좀 넓게 */
+  height: 600px; /* 높이 지정 */
+  max-width: 90%;
+  max-height: 90%;
+}
+
+.modal-header {
+  padding: 15px 20px;
+  background-color: #f1f2f6;
+  border-bottom: 1px solid #ddd;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.modal-header h3 {
+  margin: 0;
+  color: #34495e;
+}
+
+.close-btn {
+  background: none;
+  color: #999;
+  font-size: 1.5rem;
+  padding: 0;
+  border: none;
+  cursor: pointer;
+}
+.close-btn:hover {
+  color: #333;
+}
+
+.modal-body {
+  padding: 20px;
+  flex-grow: 1;
+  overflow-y: auto;
+  /* 내부 컨텐츠 중앙 정렬 */
+  display: flex;
+  justify-content: center;
+  align-items: flex-start; /* 위쪽부터 채움 */
+}
+
+.modal-footer {
+  padding: 15px 20px;
+  border-top: 1px solid #ddd;
+  text-align: right;
+}
+
+.btn-close {
+  background-color: #95a5a6;
+  color: white;
+}
+.btn-close:hover {
+  background-color: #7f8c8d;
+}
+
+/* =========================================
+   5. 모달 내부 그래프 컨텐츠 (Graph Content)
+   (여기가 추가된 부분이네! 🏴‍☠️)
+   ========================================= */
+
+/* 모달 바디 안에 들어갈 그래프 전체 래퍼 */
+.graph-body {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+}
+
+/* 그래프 상단 필터 바 */
+.graph-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: flex-end;
+  background-color: #f8f9fa;
+  padding: 15px;
+  border-radius: 6px;
+  margin-bottom: 20px;
+  border: 1px solid #eee;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.date-inputs {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+  align-items: center;
+}
+
+/* 조회 버튼 (파란색) */
+.btn-refresh {
+  height: 38px;
+  padding: 0 20px;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.2s;
+  margin-left: auto;
+}
+.btn-refresh:hover {
+  background-color: #2980b9;
+}
+
+/* 차트가 그려질 영역 */
+.chart-container {
+  flex-grow: 1; /* 남은 공간 꽉 채우기 */
+  position: relative;
+  width: 100%;
+  min-height: 300px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.trans-desc {
+  white-space: pre-line; /* \n은 줄바꿈으로 처리, 공백은 적당히 */
+  /* 또는 pre-wrap 도 가능: white-space: pre-wrap; */
+}

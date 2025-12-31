@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html
+        lang="ko"
+        xmlns:th="http://www.thymeleaf.org"
+        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        layout:decorate="~{layout/layout}"
+>
+<div layout:fragment="content">
+    <form method="post" th:action="@{/addTransport}">
+    <table border="1">
+        <thead>
+        <tr>
+            <th>차량ID</th>
+            <th>보유 수량</th>
+            <th>랜트 비용</th>
+            <th>랜트 수량</th>
+            <th>랜트 가능 수량</th>
+            <th>추가</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="vo : ${vo}" >
+            <th th:text ="${vo.transportId}"></th>
+            <th th:text ="${vo.truckNum}"></th>
+            <th th:text ="${vo.truckFee}"></th>
+            <th th:text ="${vo.rented}"></th>
+            <th th:text ="${vo.truckNum - vo.rented}"></th>
+            <th>
+                <input type="Intger" name="qty"/>
+
+                <input type="hidden" name="transportId"
+                       th:value="${vo.transportId}" />
+            </th>
+        </tr>
+        </tbody>
+    </table>
+        <input type="button" value="구메"
+               th:onclick="send(this.form)">
+    </form>
+</div>
+
+<th:block layout:fragment="script">
+    <script th:src="@{../js/Pm.js}"></script>
+</th:block>
+</html>

@@ -1,0 +1,499 @@
+/* =========================
+   QnA 리스트 박스
+   ========================= */
+
+.myPageQnaContainer {
+  padding: 30px;
+}
+
+/* h2 {
+  margin: 24px 0 12px;
+} */
+
+/* 각각의 QnA 카드 */
+.qna-item {
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 12px 14px;
+  margin-bottom: 12px;
+  background-color: #ffffff;
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.04);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* 비공개 글일 때 전체 톤 살짝 다르게 */
+.qna-item.secret {
+  background-color: #fff7f7;
+  border-color: #fecaca;
+}
+
+/* 제목 줄: 제목 + 배지들이 한 줄 */
+.qna-title-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+/* 제목 텍스트 : 왼쪽, 나머지 공간 다 차지 */
+.qna-title-text {
+  font-weight: 600;
+  font-size: 14px;
+  color: #111827;
+  flex: 1; /* ← 이 덕분에 배지들이 오른쪽 끝으로 밀림 */
+  flex-basis: 40%;
+}
+
+/* 비공개/답변완료 배지 공통 느낌 */
+.qna-secret-badge,
+.qna-answer-badge,
+.qna-answer-wait-badge {
+  display: inline-flex; /* 줄 안에 쏙, 내용만큼만 */
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 500;
+  white-space: nowrap; /* 줄바꿈 안 되게 */
+}
+
+/* 비공개 배지 (빨간 톤) */
+.qna-secret-badge {
+  background: #fff5f5;
+  color: #c53030;
+  outline: 1px solid #fed7d7;
+  margin-left: 6px;
+  flex-basis: 5%;
+  justify-content: center;
+}
+
+.qna-none-badge {
+  flex-basis: 5%;
+  margin-left: 6px;
+}
+
+/* 답변완료 배지 (초록 톤) */
+.qna-answer-badge {
+  background: #e8f5e9;
+  color: #2e7d32;
+  border: 1px solid #c8e6c9;
+  margin-left: 6px;
+  flex-basis: 8%;
+  justify-content: center;
+}
+
+/*답변대기중 배지*/
+.qna-answer-wait-badge {
+  background: rgb(240, 240, 240);
+  color: rgb(0, 0, 0);
+  border: 1px solid rgb(211, 211, 211);
+  margin-left: 6px;
+  flex-basis: 8%;
+  justify-content: center;
+}
+
+/* 질문 본문 */
+.qna-content {
+  font-size: 0.9rem;
+  color: #374151;
+  line-height: 1.4;
+  white-space: pre-line; /* 줄바꿈 유지 */
+  margin-top: 8px;
+}
+
+/* 작성자 + 날짜 줄 */
+.qna-meta {
+  margin-top: 4px;
+  font-size: 0.8rem;
+  color: #6b7280;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* 작성자 (마스킹된 아이디) */
+.qna-writer {
+  font-weight: 500;
+}
+
+/* 날짜 */
+.qna-date {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+}
+
+/* =========================
+   모달 공통
+   ========================= */
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+/* 모달 박스 */
+.modal-box {
+  width: 100%;
+  max-width: 460px;
+  background-color: #ffffff;
+  border-radius: 14px;
+  padding: 20px 22px;
+  box-shadow: 0 18px 45px rgba(15, 23, 42, 0.25);
+  animation: qnaModalPop 0.18s ease-out;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.modal-box h3 {
+  margin: 0 0 8px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+/* 입력창 (제목 + 내용) */
+.modal-box input[type="text"],
+.modal-box textarea {
+  width: 100%;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+  padding: 8px 10px;
+  font-size: 0.9rem;
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease,
+    background-color 0.15s ease;
+  background-color: #f9fafb;
+}
+
+.modal-box input[type="text"]:focus,
+.modal-box textarea:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.5);
+  background-color: #ffffff;
+}
+
+.modal-box textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+/* 비공개 체크박스 라인 */
+.secret-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.88rem;
+  color: #374151;
+  margin: 4px 0 8px;
+}
+
+.secret-checkbox input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+}
+
+/* 버튼 공통 */
+.modal-box button {
+  min-width: 90px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: none;
+  font-size: 0.9rem;
+  cursor: pointer;
+  margin-right: 6px;
+  transition: transform 0.08s ease, box-shadow 0.08s ease,
+    background-color 0.15s ease, color 0.15s ease;
+}
+
+/* 첫 번째 버튼 = 등록 (primary) */
+.modal-box button:first-of-type {
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  color: #ffffff;
+  box-shadow: 0 4px 10px rgba(37, 99, 235, 0.35);
+}
+
+/* 두 번째 버튼 = 닫기 (secondary) */
+.modal-box button:last-of-type {
+  background-color: #e5e7eb;
+  color: #374151;
+}
+
+/* 호버/활성 공통 */
+.modal-box button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 14px rgba(15, 23, 42, 0.18);
+}
+
+.modal-box button:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.18);
+}
+
+/* disabled 상태 */
+.modal-box button:disabled {
+  opacity: 0.6;
+  cursor: default;
+  box-shadow: none;
+}
+
+/* 모달 팝 애니메이션 */
+@keyframes qnaModalPop {
+  from {
+    transform: translateY(10px) scale(0.96);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+/* 화면 전체 덮는 어두운 배경 */
+.qna-answer-overlay {
+  position: fixed;
+  inset: 0; /* top:0; right:0; bottom:0; left:0; 와 같음 */
+  background: rgba(0, 0, 0, 0.45); /* 살짝 어두운 반투명 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1300; /* 목록 모달보다 더 위에 오게 */
+}
+
+/* 가운데 뜨는 모달 박스 */
+.qna-answer-container {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 20px 24px;
+  width: 500px;
+  max-height: 80vh; /* 너무 길어지면 스크롤 */
+  overflow-y: auto;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+  position: relative;
+  animation: qnaAnswerFadeIn 0.18s ease-out;
+}
+
+/* 닫기 버튼 (오른쪽 위 X) */
+.qna-answer-close {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  border: none;
+  background: transparent;
+  font-size: 18px;
+  cursor: pointer;
+  line-height: 1;
+  padding: 4px;
+}
+
+.qna-answer-close:hover {
+  transform: scale(1.1);
+}
+
+/* 제목 / 내용 스타일 (원하면 조정) */
+.qna-answer-container h3 {
+  margin-top: 4px;
+  margin-bottom: 12px;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.qna-answer-container p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.5;
+  white-space: pre-wrap; /* 줄바꿈 유지 */
+}
+
+/* 살짝 위에서 올라오는 애니메이션 */
+@keyframes qnaAnswerFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 모바일에서 너무 크지 않게 */
+@media (max-width: 480px) {
+  .qna-answer-container {
+    width: 90%;
+    max-width: 90%;
+    padding: 16px 18px;
+  }
+}
+
+/* 답변 입력 폼 전체 라인 */
+.qna-answer-form {
+  margin-top: 16px;
+  display: flex;
+  gap: 8px;
+  align-items: flex-start; /* textarea 위쪽 정렬 */
+  flex-direction: column;
+}
+
+/* textarea 스타일 */
+.qna-answer-input {
+  width: 100%;
+  flex: 1;
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid #d0d0d0;
+  font-size: 14px;
+  outline: none;
+  min-height: 80px; /* 기본 높이 */
+  resize: vertical; /* 세로로만 크기 조절 가능 (싫으면 none) */
+  box-sizing: border-box;
+}
+
+.qna-answer-input:focus {
+  border-color: #4f8cff;
+  box-shadow: 0 0 0 2px rgba(79, 140, 255, 0.15);
+}
+
+.submit-box {
+  width: 100%;
+  display: flex;
+  justify-content: end;
+}
+
+/* 답변 등록 버튼 */
+.qna-answer-submit {
+  padding: 8px 14px;
+  border-radius: 6px;
+  border: none;
+  background: #4f8cff;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.qna-answer-submit:hover {
+  filter: brightness(1.05);
+}
+
+.qna-answer-submit:active {
+  transform: translateY(1px);
+}
+
+/* 호스트 답변 아코디언 */
+.qna-answer-accordion {
+  margin-top: 8px;
+  padding: 8px 10px;
+  border-radius: 6px;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+}
+
+.qna-answer-accordion-label {
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 4px;
+  color: #374151;
+}
+
+.qna-answer-accordion-text {
+  font-size: 13px;
+  color: #111827;
+}
+.qna-item.focused-qna {
+  border: 2px solid #4a90e2;
+  background-color: #f0f7ff;
+}
+
+/* LocationBox 쪽 QnAList count 버튼  */
+.qna-badge {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 2px 6px;
+  border-radius: 999px;
+  font-size: 12px;
+  background-color: red;
+  color: white;
+  vertical-align: middle;
+  position: absolute;
+  top: -2px;
+  right: -4px;
+}
+
+/* 1. 페이지네이션 전체 컨테이너 */
+.qna-pagination {
+  display: flex;
+  justify-content: center; /* 중앙 정렬 */
+  align-items: center;
+  gap: 8px; /* 버튼 사이 간격 */
+  margin-top: 30px; /* 위쪽 여백 */
+  margin-bottom: 20px;
+}
+
+/* 2. 기본 버튼 스타일 */
+.qna-page-btn {
+  min-width: 32px; /* 숫자 버튼 최소 너비 */
+  height: 32px; /* 높이 */
+  padding: 0 10px; /* 좌우 패딩 ("이전/다음" 글자 공간 확보) */
+
+  border: 1px solid #e5e7eb; /* 연한 회색 테두리 */
+  border-radius: 6px; /* 살짝 둥근 모서리 */
+  background-color: #ffffff;
+
+  color: #374151; /* 진한 회색 글자 */
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+
+  transition: all 0.2s ease; /* 부드러운 효과 */
+
+  /* 텍스트 수직 중앙 정렬 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* 3. 마우스 올렸을 때 (Hover) */
+.qna-page-btn:hover:not(:disabled) {
+  background-color: #eff6ff; /* 아주 연한 파란색 배경 */
+  border-color: #3085d6; /* 테두리를 파란색으로 */
+  color: #3085d6; /* 글자도 파란색으로 */
+}
+
+/* 4. 현재 활성화된 페이지 (Active) */
+.qna-page-btn.active {
+  background-color: #3085d6; /* 진한 파란색 배경 */
+  border-color: #3085d6;
+  color: #ffffff; /* 흰색 글자 */
+  font-weight: 700;
+  box-shadow: 0 2px 4px rgba(48, 133, 214, 0.3); /* 살짝 그림자 */
+}
+
+/* 5. 비활성화된 버튼 (Disabled - 첫 페이지나 끝 페이지일 때) */
+.qna-page-btn:disabled {
+  background-color: #f9fafb;
+  color: #d1d5db; /* 흐릿한 회색 */
+  border-color: #f3f4f6;
+  cursor: not-allowed; /* 금지 커서 */
+}
+
+/* (옵션) 모바일에서 버튼 간격 좁히기 */
+@media (max-width: 640px) {
+  .qna-pagination {
+    gap: 4px;
+  }
+  .qna-page-btn {
+    min-width: 28px;
+    height: 28px;
+    font-size: 12px;
+    padding: 0 8px;
+  }
+}

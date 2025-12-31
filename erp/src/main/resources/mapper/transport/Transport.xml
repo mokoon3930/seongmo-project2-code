@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.java.erp.pm.dao.TransportDAO">
+    <select id="transportSelect" resultType="TransportVO">
+        SELECT * FROM transport;
+    </select>
+
+    <select id="transportOneSelect" resultType="TransportVO" parameterType="int">
+        SELECT * FROM transport WHERE transport_id = #{transportId};
+    </select>
+    
+    <update id="addTransport" parameterType="int">
+        UPDATE transport
+        SET truck_num = truck_num + #{qty}
+        WHERE transport_id = #{transportId}
+    </update>
+
+    <insert id="addNewTransport" parameterType="int">
+        INSERT INTO transport (truck_num, truck_fee)
+        VALUES ( #{truckNum}, #{truckFee} )
+    </insert>
+</mapper>

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.java.erp.sm.dao.CalendarDAO">
+
+    <select id="locationRent"
+            resultType="com.java.erp.sm.model.dto.CalendarDTO">
+        SELECT
+        -- 🔹 캘린더용 날짜
+        p.start_date      AS startDate,
+        DATE_ADD(p.end_plan_date, INTERVAL 1 DAY) AS endPlenDate,
+
+        -- 🔹 기본 키들
+        b.booking_id      AS bookingId,
+        l.location_id     AS locationId,
+        l.location_name   AS locationName,
+
+        -- 🔹 임대인 정보 (location.user_id)
+        l.user_id         AS landlordId,
+        lu.name           AS landlordName,
+        lu.phone          AS landlordPhone,
+        lu.email          AS landlordEmail,
+
+        -- 🔹 임차인 정보 (booking.user_id)
+        b.user_id         AS tenantId,
+        tu.name           AS tenantName,
+        tu.phone          AS tenantPhone,
+        tu.email          AS tenantEmail,
+
+        -- 🔹 기간 / 금액
+        (DATEDIFF(b.booking_end, b.booking_start) + 1) AS bookingDays,
+        b.booking_fee     AS bookingFee,
+        t.transport_fee   AS transportFee,
+        i.item_fee        AS itemFee
+
+        FROM project p
+        JOIN booking b
+        ON p.booking_id = b.booking_id
+        JOIN rent_reservation r
+        ON b.rr_id = r.rr_id
+        JOIN location l
+        ON r.location_id = l.location_id
+
+        -- 임대인 user
+        JOIN `user` lu
+        ON lu.user_id = l.user_id
+
+        -- 임차인 user (예약자)
+        JOIN `user` tu
+        ON tu.user_id = b.user_id
+
+        JOIN service_management sm
+        ON sm.booking_id = b.booking_id
+
+        LEFT JOIN transport_service t
+        ON t.sm_id = sm.sm_id
+
+        LEFT JOIN item_service i
+        ON i.sm_id = sm.sm_id
+
+        WHERE p.status = '승인';
+    </select>
+
+    <select id="myLeaved" parameterType="int" resultType="vacation">
+        SELECT
+        leaved_id      AS leavedId,
+        emp_id         AS empId,
+        leave_type     AS leaveType,
+        start_date     AS startDate,
+        end_date       AS endDate,
+        leaved_days    AS leavedDays,
+        reason,
+        status,
+        approver_id    AS approverId,
+        request_date   AS requestDate,
+        approve_date   AS approveDate
+        FROM leaved
+        WHERE emp_id = #{empId}
+        AND status = '승인'
+    </select>
+
+
+
+</mapper>

@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html
+  lang="ko"
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layout/layout}"
+>
+  <th:block layout:fragment="css">
+    <link rel="stylesheet" th:href="@{/css/fm/financial.css}" />
+    <!-- <link rel="stylesheet" th:href="@{/css/fm/financial_graph.css}" /> -->
+  </th:block>
+
+  <th:block layout:fragment="script">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script th:src="@{/js/fm/financial.js}"></script>
+
+    <script th:src="@{/js/fm/fmModal.js}"></script>
+  </th:block>
+
+  <div layout:fragment="content">
+    <div class="erp-card">
+      <h2>재무 관리 (Financial Management)</h2>
+
+      <form th:action="@{/financial}" method="get" class="search-form">
+        <div class="form-group">
+          <label>거래 타입</label>
+          <select name="transType" onchange="this.form.submit()">
+            <option
+              value=""
+              th:selected="${#lists.isEmpty(param.transType) or param.transType[0] == ''}"
+            >
+              전체
+            </option>
+            <option
+              value="수입"
+              th:selected="${!#lists.isEmpty(param.transType) and param.transType[0] == '수입'}"
+            >
+              수입
+            </option>
+            <option
+              value="지출"
+              th:selected="${!#lists.isEmpty(param.transType) and param.transType[0] == '지출'}"
+            >
+              지출
+            </option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>카테고리</label>
+          <select name="category">
+            <option
+              value=""
+              th:selected="${#lists.isEmpty(param.category) or param.category[0] == ''}"
+            >
+              전체 분류
+            </option>
+            <option
+              th:each="c : ${categories}"
+              th:value="${c}"
+              th:text="${c}"
+              th:selected="${!#lists.isEmpty(param.category) and param.category[0] == c}"
+            ></option>
+          </select>
+        </div>
+
+        <div class="form-group date-range">
+          <input type="date" name="fromDate" th:value="${param.fromDate}" />
+          <span>~</span>
+          <input type="date" name="toDate" th:value="${param.toDate}" />
+        </div>
+
+        <button type="submit" class="btn-search">검색</button>
+
+        <button type="button" class="btn-graph" onclick="openGraphModal()">
+          📊 그래프 보기
+        </button>
+      </form>
+
+      <table class="styled-table">
+        <thead>
+          <tr>
+            <th>거래 번호</th>
+            <th>거래 타입</th>
+            <th>금액</th>
+            <th>분류</th>
+            <th>상세 내역</th>
+            <th>발생 일자</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:if="${transList.isEmpty()}">
+            <td colspan="6" style="text-align: center">
+              거래 내역이 없습니다.
+            </td>
+          </tr>
+          <tr th:each="trans : ${transList}">
+            <td th:text="${trans.transId}"></td>
+            <td>
+              <span
+                th:class="${trans.transType == '수입' ? 'badge-income' : 'badge-expense'}"
+                th:text="${trans.transType}"
+              ></span>
+            </td>
+            <td
+              th:text="${#numbers.formatInteger(trans.transAmount, 0, 'COMMA') + '원'}"
+            ></td>
+            <td th:text="${trans.category}"></td>
+            <td th:text="${trans.transDesc}" style="white-space: pre-line"></td>
+            <td th:text="${trans.transDate}"></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <nav>
+        <ul class="pagination">
+          <li class="page-item" th:classappend="${!paging.prev} ? ' disabled'">
+            <a
+              class="page-link"
+              th:href="@{/financial(transType=${param.transType}, category=${param.category}, fromDate=${param.fromDate}, toDate=${param.toDate}, page=${paging.startPage - 1})}"
+            >
+              Previous
+            </a>
+          </li>
+
+          <li
+            th:if="${paging.endPage > 0}"
+            th:each="pageNum : ${#numbers.sequence(paging.startPage, paging.endPage)}"
+            class="page-item"
+            th:classappend="${pageNum == paging.page} ? ' active'"
+          >
+            <a
+              class="page-link"
+              th:href="@{/financial(transType=${param.transType}, category=${param.category}, fromDate=${param.fromDate}, toDate=${param.toDate}, page=${pageNum})}"
+              th:text="${pageNum}"
+            ></a>
+          </li>
+
+          <li class="page-item" th:classappend="${!paging.next} ? ' disabled'">
+            <a
+              class="page-link"
+              th:href="@{/financial(transType=${param.transType}, category=${param.category}, fromDate=${param.fromDate}, toDate=${param.toDate}, page=${paging.endPage + 1})}"
+            >
+              Next
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+    <div id="graphModal" class="modal-overlay hidden">
+      <div class="modal-content graph-modal-size">
+        <div class="modal-header">
+          <h3>재무 그래프</h3>
+          <button type="button" class="close-btn" onclick="closeGraphModal()">
+            &times;
+          </button>
+        </div>
+        <div class="modal-body" id="modal-content-area">
+          <p>여기에 그래프를 그려주면 됩니다!</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn-close" onclick="closeGraphModal()">
+            닫기
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</html>

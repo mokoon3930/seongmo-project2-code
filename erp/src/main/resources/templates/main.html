@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html
+  lang="ko"
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layout/layout}"
+>
+<th:block layout:fragment="css">
+    <link rel="stylesheet" th:href="@{/css/commons/myPage.css}">
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.css" rel="stylesheet" />
+    <link rel="stylesheet" th:href="@{/css/sm/calendar.css}"/>
+</th:block>
+
+<div layout:fragment="content">
+    <div class="erp-container">
+    <div class="erp-card my-page-card">
+        <h2 class="page-title">내 정보 (My Profile)</h2>
+
+        <form class="profile-form">
+
+            <div class="profile-row">
+                <span class="label">이름</span>
+                <div class="value" th:text="${name}">홍길동</div>
+            </div>
+
+            <div class="profile-row">
+                <span class="label">아이디</span>
+                <div class="value" th:text="${username}">hong123</div>
+            </div>
+
+            <div class="profile-row">
+                <span class="label">비밀번호</span>
+                <div class="value">
+                    <input type="button" value="비밀번호 변경" class="btn-sub" th:onclick="passModal()">
+                </div>
+            </div>
+
+            <div class="profile-row">
+                <span class="label">부서</span>
+                <div class="value" th:text="${deptName}">개발팀</div>
+            </div>
+
+            <div class="profile-row">
+                <span class="label">직책</span>
+                <div class="value" th:text="${jobName}">선장</div>
+            </div>
+
+            <div class="profile-row">
+                <span class="label">잔여 휴가</span>
+                <div class="value" th:text="${totalDays}"></div>
+            </div>
+
+        </form>
+    </div>
+
+    <div id="passwordModal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <h3>비밀번호 변경</h3>
+            <p class="modal-desc">새로운 암호를 입력하시오.</p>
+
+            <form id="pwdForm">
+                <div class="input-group">
+                    <label for="oldPwd">현재 비밀번호</label>
+                    <input type="password" id="oldPwd" name="oldPwd" placeholder="현재 비밀번호 입력" />
+                </div>
+
+                <div class="input-group">
+                    <label for="newPwd">변경할 비밀번호</label>
+                    <input type="password" id="newPwd" name="newPwd" placeholder="새 비밀번호 입력" />
+                </div>
+
+                <div id="msg-box" class="msg-box"></div>
+
+                <div class="modal-actions">
+                    <input type="button" value="변경하기"
+                           id="change-btn"
+                           class="btn-primary"
+                           disabled="disabled"
+                           th:onclick="pwdChange(document.getElementById('pwdForm'))">
+
+                    <input type="button" value="닫기"
+                           class="btn-secondary"
+                           th:onclick="modalClose()">
+                </div>
+            </form>
+        </div>
+
+    </div>
+
+        <div class="erp-card my-calendar-card" id="calendar"></div>
+
+        <div id="rentModal" class="rent-modal">
+            <div class="rent-modal-content">
+                <span class="rent-modal-close" id="rentModalClose">&times;</span>
+                <h2 id="rentModalTitle"></h2>
+                <div id="rentModalBody"></div>
+            </div>
+        </div>
+
+
+    </div>
+
+
+    <div class="erp-card">
+        <form method="post" action="/vacation" onsubmit="return send(this)">
+
+            <input type="hidden"
+                   th:name="${_csrf.parameterName}"
+                   th:value="${_csrf.token}" />
+
+            <h1>휴가 신청</h1>
+
+            <h2>신청일</h2>
+            <input type="text" name="requestDate" th:value="${T(java.time.LocalDate).now()}" readonly>
+            <h2>휴가 종류</h2>
+            <select id="leaveType" name="leaveType">
+                <option>연차</option>
+                <option>병가</option>
+                <option>공가</option>
+                <option>경조사</option>
+                <option>기타</option>
+
+            </select>
+
+            <h2>휴가 시작일</h2>
+            <input type="date" id="startDate" name="startDate" required>
+
+            <h2>휴가 종료일</h2>
+            <input type="date" id="endDate" name="endDate" required>
+
+            <h2>사유</h2>
+            <textarea name="reason" placeholder="사유 작성란" rows="5" cols="50"></textarea>
+
+            <input type="submit" value="등록">
+            <input type="button" value="취소" onclick="history.go(-1)">
+        </form>
+    </div>
+
+
+
+</div>
+
+<th:block layout:fragment="script">
+    <script th:src="@{/js/commons/myPage.js}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
+    <script defer th:src="@{/js/sm/calender2.js}"></script>
+  <script>
+        window.onload = function() {
+           const today = new Date();
+
+           const formatDate = (date) => {
+               const year = date.getFullYear();
+               const month = String(date.getMonth() + 1).padStart(2, '0');
+               const day = String(date.getDate()).padStart(2, '0');
+               return `${year}-${month}-${day}`;
+           };
+
+           const todayStr = formatDate(today);
+
+           // 시작일, 종료일 input 요소 가져오기
+           const startDateInput = document.getElementById('startDate');
+           const endDateInput = document.getElementById('endDate');
+
+           // 오늘 이전 날짜 선택 불가 설정
+           startDateInput.min = todayStr;
+           endDateInput.min = todayStr;
+       };
+       function send(f) {
+
+           const today = new Date();
+           const startDate = new Date(f.startDate.value);
+           const endDate = new Date(f.endDate.value);
+           const totalDays = parseInt(f.totalDays.value);  // 총 휴가 일수
+
+           if (startDate < today) {
+               alert("휴가 시작일을 다시 작성하세요.");
+               return false;
+           }
+
+           if (endDate < startDate) {
+               alert("휴가 종료일은 시작일보다 빠를 수 없습니다.");
+               return false;
+           }
+
+           const vacationDays = Math.ceil((endDate - startDate) / (1000 * 3600 * 24)) + 1;
+           if (vacationDays > totalDays) {
+               alert("총 휴가 일수보다 많은 기간을 신청할 수 없습니다.");
+               return false;
+           }
+
+           return true;
+       }
+    </script>
+</th:block>
+</html>

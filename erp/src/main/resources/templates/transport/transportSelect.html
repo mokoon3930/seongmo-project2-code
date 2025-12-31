@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+
+<th:block layout:fragment="css">
+    <link rel="stylesheet" th:href="@{/css/fm/transport.css}">
+</th:block>
+
+<div layout:fragment="content">
+
+    <div class="erp-card">
+        <div class="card-header">
+            <h2>차량 관리 (Transport Management)</h2>
+        </div>
+
+        <table class="styled-table">
+            <thead>
+            <tr>
+                <th style="width: 100px;">차량 ID</th>
+                <th>보유 수량</th>
+                <th>렌트 비용</th>
+                <th>대여 중</th>
+                <th>대여 가능</th>
+                <th style="width: 120px;">관리</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:if="${vo.isEmpty()}">
+                <td colspan="6" style="text-align: center; padding: 30px;">
+                    등록된 차량이 없습니다.
+                </td>
+            </tr>
+
+            <tr th:each="item : ${vo}">
+                <td th:text="${item.transportId}">TR_001</td>
+                <td th:text="${item.truckNum} + '대'">10</td>
+                <td class="text-right money"
+                    th:text="${#numbers.formatInteger(item.truckFee, 0, 'COMMA') + '원'}">
+                    50,000원
+                </td>
+                <td th:text="${item.rented} + '대'">2</td>
+                <td style="font-weight: bold; color: #3498db;"
+                    th:text="${(item.truckNum - item.rented)} + '대'">
+                    8
+                </td>
+
+                <td>
+                    <button type="button" class="btn-small btn-add"
+                            th:onclick="openStockModal([[${item.transportId}]])">
+                        📦 입고
+                    </button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+        <div class="bottom-actions">
+            <button type="button" class="btn-create" onclick="openNewTransportModal()">
+                🚛 새로운 차량 등록
+            </button>
+        </div>
+
+    </div> <div id="stockModal" class="modal-overlay hidden">
+    <div class="modal-content" style="width: 400px;">
+        <div class="modal-header">
+            <h3>차량 추가 입고</h3>
+            <button type="button" class="close-btn" onclick="closeStockModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <form th:action="@{/addTransport}" method="post">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
+                <input type="hidden" id="modalTransportId" name="transportId" />
+
+                <div style="margin-bottom: 20px;">
+                    <label style="display:block; margin-bottom:5px; font-weight:bold; color:#555;">선택된 차량 ID</label>
+                    <input type="text" id="displayId" class="form-input" readonly
+                           style="background-color: #f2f2f2; width: 100%; box-sizing: border-box;">
+                </div>
+
+                <div style="margin-bottom: 30px;">
+                    <label style="display:block; margin-bottom:5px; font-weight:bold; color:#555;">추가할 수량 (대)</label>
+                    <input type="number" name="qty" class="form-input" placeholder="수량 입력" required min="1"
+                           style="width: 100%; box-sizing: border-box; font-weight: bold; color: #27ae60;">
+                </div>
+
+                <div style="text-align: right; border-top: 1px solid #eee; padding-top: 20px;">
+                    <button type="button" class="btn-close" onclick="closeStockModal()" style="margin-right: 10px;">취소</button>
+                    <button type="submit" class="btn-create" style="width: auto; display: inline-block;">입고 확정</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+    <div id="newTransportModal" class="modal-overlay hidden">
+        <div class="modal-content" style="width: 450px;">
+            <div class="modal-header">
+                <h3>신규 차량 구매 계약</h3>
+                <button type="button" class="close-btn" onclick="closeNewTransportModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form th:action="@{/addNewTransport}" method="post">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
+                    <div style="margin-bottom: 20px;">
+                        <label style="display:block; margin-bottom:5px; font-weight:bold; color:#555;">초기 도입 수량 (대)</label>
+                        <input type="number" name="truckNum" class="form-input"
+                               placeholder="예: 5" required min="1"
+                               style="width: 100%; box-sizing: border-box;">
+                    </div>
+
+                    <div style="margin-bottom: 30px;">
+                        <label style="display:block; margin-bottom:5px; font-weight:bold; color:#555;">대여 비용 (원)</label>
+                        <input type="number" name="truckFee" class="form-input"
+                               placeholder="예: 50000" required min="0"
+                               style="width: 100%; box-sizing: border-box;">
+                    </div>
+
+                    <div style="text-align: right; border-top: 1px solid #eee; padding-top: 20px;">
+                        <button type="button" class="btn-close" onclick="closeNewTransportModal()" style="margin-right: 10px;">취소</button>
+                        <button type="submit" class="btn-create" style="width: auto; display: inline-block;">구매 확정</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<th:block layout:fragment="script">
+    <script>
+        // --- 모달 1: 재고 입고 관련 ---
+        function openStockModal(transportId) {
+            document.getElementById('stockModal').classList.remove('hidden');
+            document.getElementById('modalTransportId').value = transportId;
+            document.getElementById('displayId').value = transportId;
+        }
+
+        function closeStockModal() {
+            document.getElementById('stockModal').classList.add('hidden');
+            document.querySelector('#stockModal input[name="qty"]').value = ''; // 입력창 비우기
+        }
+
+        // --- 모달 2: 신규 등록 관련 ---
+        function openNewTransportModal() {
+            document.getElementById('newTransportModal').classList.remove('hidden');
+        }
+
+        function closeNewTransportModal() {
+            document.getElementById('newTransportModal').classList.add('hidden');
+            // 입력창 비우기
+            const inputs = document.querySelectorAll('#newTransportModal input:not([type="hidden"])');
+            inputs.forEach(input => input.value = '');
+        }
+
+        // --- 배경 클릭 시 닫기 (이벤트 위임) ---
+        window.onclick = function(event) {
+            const stockModal = document.getElementById('stockModal');
+            const newModal = document.getElementById('newTransportModal');
+
+            if (event.target === stockModal) {
+                closeStockModal();
+            }
+            if (event.target === newModal) {
+                closeNewTransportModal();
+            }
+        }
+    </script>
+</th:block>
+</html>

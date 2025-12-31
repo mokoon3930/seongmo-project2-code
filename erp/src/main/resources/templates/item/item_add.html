@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html
+        lang="ko"
+        xmlns:th="http://www.thymeleaf.org"
+        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        layout:decorate="~{layout/layout}"
+>
+<th:block layout:fragment="script">
+    <script th:src="@{../js/Pm.js}"></script>
+</th:block>
+
+<div layout:fragment="content">
+<form method="post" th:action="@{/item/item_add}">
+    <table border="1">
+        <thead>
+            <tr>
+                <th>아이템ID</th>
+                <th>물품 이름</th>
+                <th>물품 가격</th>
+                <th>물품 수량</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <tr th:each="vo : ${vo}">
+                <td>
+                    <span th:text="${vo.itemInfoId}"></span>
+                    <input type="hidden" name="itemInfoId" th:value="${vo.itemInfoId}">
+                    <input type="hidden" name="icId" th:value="${vo.icId}">
+                </td>
+                <td>
+                    <div th:text="${vo.itemName}"/>
+                </td>
+                <td>
+                    <div th:text="${vo.itemPrice}"/>
+                </td>
+                <th>
+                    <input type="Intger" name="qty"/>
+                </th>
+            </tr>
+        </tbody>
+    </table>
+
+    <input type="button" value="목록으로"
+           th:onclick="|location.href='@{/item/category?icId={icId}(icId=${vo.icId})}'|">
+
+    <input type="button" value="구메"
+           th:onclick="send(this.form)">
+    </form>
+
+</div>
+</html>

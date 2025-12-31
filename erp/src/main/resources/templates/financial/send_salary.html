@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+
+<head>
+    <th:block layout:fragment="css">
+        <link rel="stylesheet" th:href="@{/css/fm/send_salary.css}">
+    </th:block>
+</head>
+
+<body>
+<div layout:fragment="content" class="erp-card">
+    <div class="send-salary-header">
+        <button type="button" class="btn-back"
+                th:onclick="|location.href='@{/allSalary}'|">
+            목록으로
+        </button>
+    </div>
+
+    <table class="styled-table">
+        <thead>
+        <tr>
+            <th>급여 ID</th>
+            <th>공제 금액(3.3%)</th>
+            <th>총 지급액</th>
+            <th>지급 일</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="salary : ${salary}">
+            <td th:text="${salary.salaryId}"></td>
+            <td class="money" th:text="${salary.deduction}"></td>
+            <td class="money" th:text="${salary.totalSalary}"></td>
+            <td class="date-text" th:text="${salary.salaryDate}"></td>
+        </tr>
+        </tbody>
+    </table>
+
+<nav>
+    <ul class="pagination">
+
+        <!-- 이전 버튼 -->
+        <li class="page-item" th:classappend="${!paging.prev} ? ' disabled'">
+            <a class="page-link"
+               th:href="@{/sendSalary( keyword=${param.keyword}, page=${paging.startPage - 1})}">
+                Previous
+            </a>
+        </li>
+
+        <!-- 페이지 번호 -->
+        <li th:if="${paging.endPage > 0}"
+            th:each="pageNum : ${#numbers.sequence(paging.startPage, paging.endPage)}"
+            class="page-item"
+            th:classappend="${pageNum == paging.page} ? ' active'">
+            <a class="page-link"
+               th:href="@{/sendSalary( keyword=${param.keyword}, page=${pageNum})}"
+               th:text="${pageNum}"></a>
+        </li>
+
+        <!-- 다음 버튼 -->
+        <li class="page-item" th:classappend="${!paging.next} ? ' disabled'">
+            <a class="page-link"
+               th:href="@{/sendSalary( keyword=${param.keyword}, page=${paging.endPage + 1})}">
+                Next
+            </a>
+        </li>
+
+    </ul>
+</nav>
+
+</div>
+</html>

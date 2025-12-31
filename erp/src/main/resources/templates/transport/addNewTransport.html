@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html
+        lang="ko"
+        xmlns:th="http://www.thymeleaf.org"
+        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        layout:decorate="~{layout/layout}"
+>
+<div layout:fragment="content">
+    <form th:action="@{/addNewTransport}" method="post">
+        <table>
+            <thead>
+            <tr>
+                <th>필요 대 수</th>
+                <th>대여 가격</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td><input type="number" name="truckNum" required></td>
+                <td><input type="number" name="truckFee" required></td>
+            </tr>
+            </tbody>
+        </table>
+        <button type="submit">트럭 랜탈</button>
+    </form>
+
+    <input type="button" value="목록으로"
+           th:onclick="|location.href='@{transport}'|">
+</div>
+
+
+</html>

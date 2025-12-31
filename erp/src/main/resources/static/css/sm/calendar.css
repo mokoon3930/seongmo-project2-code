@@ -1,0 +1,95 @@
+.rent-modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(0, 0, 0, 0.45);
+}
+
+.rent-modal.open {
+  display: block;
+}
+
+.rent-modal-content {
+  background: #ffffff;
+  margin: 80px auto;
+  padding: 24px 28px;
+  border-radius: 14px;
+  width: 720px;
+  max-width: 95%;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.18);
+  position: relative;
+  font-family: "Pretendard", system-ui, -apple-system, sans-serif;
+}
+
+.rent-modal-close {
+  position: absolute;
+  top: 14px;
+  right: 16px;
+  font-size: 22px;
+  cursor: pointer;
+  color: #999;
+  transition: transform 0.15s ease, color 0.15s ease;
+}
+
+.rent-modal-close:hover {
+  transform: scale(1.1);
+  color: #555;
+}
+
+/* 모달 제목이 있으면 조금 여유 */
+#rentModalTitle {
+  margin-bottom: 16px;
+  font-size: 20px;
+  font-weight: 600;
+  color: #222;
+}
+
+/* 임대인 / 임차인 카드 영역 */
+.userDesc {
+  display: flex;
+  gap: 16px;          /* 20 → 16px + 단위 추가 */
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.landlordDesc,
+.tenantDesc {
+  flex: 1;
+  border: 1px solid #e2e2e2;
+  border-radius: 10px;
+  padding: 12px 14px;
+  background: #fafafa;
+}
+
+/* 카드 안 타이틀 (임대인 / 임차인) */
+#landlord,
+#tenant {
+  font-weight: 600;
+  margin-bottom: 8px;
+  font-size: 15px;
+  color: #333;
+}
+
+/* ID / 이름 / 번호 / 이메일 줄들 */
+.landlordDesc > div:not(:first-child),
+.tenantDesc > div:not(:first-child) {
+  font-size: 13px;
+  color: #555;
+  margin-bottom: 4px;
+}
+
+/* 예약 정보 박스 */
+.bookingDesc {
+  border: 1px solid #e2e2e2;
+  border-radius: 10px;
+  padding: 12px 14px;
+  background: #fdfdfd;
+  font-size: 13px;
+  color: #444;
+  margin-top: 8px;
+}
+
+.bookingDesc p {
+  margin: 4px 0;
+}

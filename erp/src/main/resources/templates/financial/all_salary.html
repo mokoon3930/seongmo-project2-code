@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html
+  lang="ko"
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layout/layout}"
+>
+  <th:block layout:fragment="css">
+    <link rel="stylesheet" th:href="@{/css/fm/salary.css}" />
+  </th:block>
+
+  <div layout:fragment="content">
+    <div class="erp-card">
+      <div class="card-header">
+        <h2>직원 급여 조회 (Salary Management)</h2>
+      </div>
+
+      <div class="toolbar">
+        <form th:action="@{/allSalary}" method="get" class="search-form">
+          <input
+            type="text"
+            name="keyword"
+            class="form-input"
+            placeholder="사원 이름 검색"
+            th:value="${param.keyword}"
+          />
+          <button type="submit" class="btn-search">검색</button>
+        </form>
+
+        <div class="action-group">
+          <form th:action="@{/insert_salary}" method="post" class="pay-form">
+            <label>지급일</label>
+            <input
+              type="hidden"
+              th:name="${_csrf.parameterName}"
+              th:value="${_csrf.token}"
+            />
+            <input
+              type="date"
+              name="payDate"
+              class="form-input"
+              th:value="${#dates.format(#dates.createNow(),'yyyy-MM-dd')}"
+              required
+            />
+            <button
+              type="submit"
+              class="btn-pay"
+              onclick="return confirm('정말 일괄 지급하시겠습니까?');"
+            >
+              💰 일괄 지급
+            </button>
+          </form>
+
+          <button
+            type="button"
+            class="btn-stub"
+            th:onclick="|location.href='@{/sendSalary}'|"
+          >
+            📄 급여 일괄 조회
+          </button>
+        </div>
+      </div>
+
+      <table class="styled-table">
+        <thead>
+          <tr>
+            <th>유저 이름</th>
+            <th>기본 급여</th>
+            <th>급여 조정</th>
+            <th>상세 정보</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:if="${vo.isEmpty()}">
+            <td colspan="4" style="text-align: center">
+              등록된 사원이 없습니다.
+            </td>
+          </tr>
+
+          <tr th:each="emp : ${vo}">
+            <td th:text="${emp.name}" style="font-weight: bold">홍길동</td>
+
+            <td
+              class="money"
+              th:text="${#numbers.formatInteger(emp.baseSalary, 0, 'COMMA') + '원'}"
+            >
+              2,000,000원
+            </td>
+
+            <td style="text-align: center">
+              <button
+                type="button"
+                class="btn-small btn-edit"
+                th:onclick="openEditModal([[${emp.empId}]])"
+              >
+                수정
+              </button>
+            </td>
+            <td style="text-align: center">
+              <button
+                type="button"
+                class="btn-small btn-info"
+                th:onclick="openSalaryModal([[${emp.empId}]])"
+              >
+                개인 급여
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!--개인급여모달부분-->
+      <div id="salaryModal" class="modal-overlay hidden">
+        <div class="modal-content salary-modal-size">
+          <div class="modal-header">
+            <h3>개인 급여 상세</h3>
+            <button
+              type="button"
+              class="close-btn"
+              onclick="closeSalaryModal()"
+            >
+              &times;
+            </button>
+          </div>
+
+          <div class="modal-body" id="salary-modal-body">
+            <div style="text-align: center; padding: 20px">로딩중... ⏳</div>
+          </div>
+
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn-close"
+              onclick="closeSalaryModal()"
+            >
+              닫기
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!--급여수정모달부분-->
+      <div id="editModal" class="modal-overlay hidden">
+        <div class="modal-content" style="width: 400px">
+          <div class="modal-header">
+            <h3>급여 수정</h3>
+            <button type="button" class="close-btn" onclick="closeEditModal()">
+              &times;
+            </button>
+          </div>
+          <div class="modal-body" id="edit-modal-body">
+            <div style="text-align: center; padding: 20px">로딩중... ⏳</div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn-close" onclick="closeEditModal()">
+              취소
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!--페이징-->
+      <nav class="pagination-container">
+        <ul class="pagination">
+          <li class="page-item" th:classappend="${!paging.prev} ? ' disabled'">
+            <a
+              class="page-link"
+              th:href="@{/allSalary(keyword=${param.keyword}, page=${paging.startPage - 1})}"
+            >
+              Previous
+            </a>
+          </li>
+
+          <li
+            th:if="${paging.endPage > 0}"
+            th:each="pageNum : ${#numbers.sequence(paging.startPage, paging.endPage)}"
+            class="page-item"
+            th:classappend="${pageNum == paging.page} ? ' active'"
+          >
+            <a
+              class="page-link"
+              th:href="@{/allSalary(keyword=${param.keyword}, page=${pageNum})}"
+              th:text="${pageNum}"
+              >1</a
+            >
+          </li>
+
+          <li class="page-item" th:classappend="${!paging.next} ? ' disabled'">
+            <a
+              class="page-link"
+              th:href="@{/allSalary(keyword=${param.keyword}, page=${paging.endPage + 1})}"
+            >
+              Next
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+
+  <div layout:fragment="script">
+    <script th:inline="javascript">
+      function openSalaryModal(empId) {
+        const modal = document.getElementById("salaryModal");
+        const body = document.getElementById("salary-modal-body");
+
+        // 모달 열기
+        modal.classList.remove("hidden");
+        body.innerHTML =
+          '<div style="text-align:center; padding: 50px;">데이터를 불러오는 중입니다...</div>';
+
+        // AJAX 요청 (HTML 조각 가져오기)
+        fetch("/salary/history?empId=" + empId)
+          .then((response) => {
+            if (!response.ok) throw new Error("통신 실패!");
+            return response.text();
+          })
+          .then((html) => {
+            body.innerHTML = html; // 내용 갈아끼우기
+          })
+          .catch((err) => {
+            console.error(err);
+            body.innerHTML =
+              '<div style="text-align:center; color:red; padding: 30px;">정보를 불러오지 못했습니다.</div>';
+          });
+      }
+
+      function closeSalaryModal() {
+        document.getElementById("salaryModal").classList.add("hidden");
+        // 내용 비우기 (선택사항)
+        setTimeout(() => {
+          document.getElementById("salary-modal-body").innerHTML = "";
+        }, 300);
+      }
+
+      // 배경 클릭 시 닫기
+      document
+        .getElementById("salaryModal")
+        .addEventListener("click", function (e) {
+          if (e.target === this) closeSalaryModal();
+        });
+
+      function openEditModal(empId) {
+        const modal = document.getElementById("editModal");
+        const body = document.getElementById("edit-modal-body");
+
+        modal.classList.remove("hidden");
+        body.innerHTML =
+          '<div style="text-align:center; padding: 20px;">로딩중...</div>';
+
+        fetch("/salary/update?empId=" + empId)
+          .then((res) => {
+            if (!res.ok) throw new Error("불러오기 실패");
+            return res.text();
+          })
+          .then((html) => {
+            body.innerHTML = html;
+          })
+          .catch((err) => {
+            console.error(err);
+            body.innerHTML = "에러 발생!";
+          });
+      }
+
+      // 2. 모달 닫기
+      function closeEditModal() {
+        document.getElementById("editModal").classList.add("hidden");
+      }
+
+      // 3. 🔥 [핵심] 급여 수정 AJAX 요청 (폼 제출 시 실행)
+      function updateSalary(event) {
+        event.preventDefault(); // 폼의 기본 제출(새로고침) 막기!
+
+        const form = document.getElementById("salaryUpdateForm");
+        const formData = new FormData(form);
+
+        // FormData를 URLSearchParams로 변환 (Controller가 DTO로 받기 편함)
+        // 혹은 JSON으로 보내도 되지만, DTO 매핑엔 이게 편할 때가 많음
+        const params = new URLSearchParams(formData);
+
+        fetch("/update_salary", {
+          // 기존 URL 재사용
+          method: "POST",
+          body: params,
+          // CSRF 토큰은 form 안에 hidden input으로 이미 들어있어서 params에 포함됨!
+        })
+          .then((res) => {
+            if (res.ok) {
+              alert("급여가 수정되었습니다! 💰");
+              closeEditModal();
+              location.reload(); // 목록 갱신을 위해 새로고침 (혹은 부분 갱신)
+            } else {
+              alert("수정 실패! 값을 확인하세요.");
+            }
+          })
+          .catch((err) => {
+            console.error(err);
+            alert("서버 오류 발생!");
+          });
+
+        return false;
+      }
+    </script>
+  </div>
+</html>

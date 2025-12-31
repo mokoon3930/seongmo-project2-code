@@ -1,0 +1,121 @@
+/* 알림 버튼 */
+.notiBtn {
+  position: relative;
+  border: none;
+  background: none;
+  font-size: 22px;
+  cursor: pointer;
+}
+
+/* 빨간 동그라미 배지 */
+.notiBadge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  border-radius: 999px;
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: red;
+  color: white;
+}
+
+/* 모달 전체 배경 (어두운 부분) */
+.notiModalBackdrop {
+  position: fixed;
+  inset: 0; /* top/right/bottom/left: 0 과 같음 */
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+  padding: 60px 40px; /* 화면 오른쪽 위 느낌 */
+  z-index: 999;
+}
+
+/* 모달 박스 */
+.notiModal {
+  position: fixed;
+  width: 320px;
+  max-height: 500px;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* 헤더 */
+.notiModalHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  border-bottom: 1px solid #eee;
+  font-weight: bold;
+}
+
+.notiCloseBtn {
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+/* 본문 */
+.notiModalBody {
+  padding: 8px 0;
+  overflow-y: auto;
+  max-height: 440px;
+}
+
+/* 빈 상태 */
+.notiEmpty {
+  padding: 20px;
+  text-align: center;
+  color: #888;
+  font-size: 14px;
+}
+
+/* 알림 리스트 */
+.notiList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.notiItem {
+  padding: 10px 14px;
+  border-bottom: 1px solid #f2f2f2;
+  font-size: 13px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.unread {
+  background: #f5f8ff; /* 안 읽은 알림은 살짝 하이라이트 */
+  font-weight: bold;
+}
+
+.notiMessage {
+  margin-bottom: 4px;
+}
+
+.noti-date {
+  font-size: 11px;
+  color: #999;
+}
+
+.notiDeleteButton {
+  border: 0;
+  padding-left: 10px;
+  background: none;
+  color: red;
+  font-size: 1.3rem;
+  cursor: pointer;
+}

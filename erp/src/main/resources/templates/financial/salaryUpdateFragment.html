@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <body>
+    <div th:fragment="updateContent">
+      <h3
+        style="
+          color: #34495e;
+          margin-bottom: 20px;
+          border-left: 5px solid #3498db;
+          padding-left: 10px;
+        "
+      >
+        기본 급여 수정
+      </h3>
+
+      <form id="salaryUpdateForm" onsubmit="return updateSalary(event)">
+        <input
+          type="hidden"
+          th:name="${_csrf.parameterName}"
+          th:value="${_csrf.token}"
+        />
+        <input type="hidden" name="empId" th:value="${salary.empId}" />
+
+        <div style="margin-bottom: 20px">
+          <label
+            style="
+              display: block;
+              margin-bottom: 5px;
+              font-weight: bold;
+              color: #555;
+            "
+            >사원 이름</label
+          >
+          <input
+            type="text"
+            class="form-input"
+            th:value="${salary.name}"
+            readonly
+            style="
+              background-color: #f2f2f2;
+              width: 100%;
+              box-sizing: border-box;
+            "
+          />
+        </div>
+
+        <div style="margin-bottom: 30px">
+          <label
+            style="
+              display: block;
+              margin-bottom: 5px;
+              font-weight: bold;
+              color: #555;
+            "
+            >기본 급여</label
+          >
+          <input
+            type="number"
+            name="baseSalary"
+            class="form-input"
+            th:value="${salary.baseSalary}"
+            required
+            style="
+              width: 100%;
+              box-sizing: border-box;
+              font-weight: bold;
+              color: #27ae60;
+            "
+          />
+        </div>
+
+        <div style="text-align: right">
+          <button
+            type="submit"
+            class="btn-pay"
+            style="width: auto; padding: 10px 20px"
+          >
+            수정 완료
+          </button>
+        </div>
+      </form>
+    </div>
+  </body>
+</html>

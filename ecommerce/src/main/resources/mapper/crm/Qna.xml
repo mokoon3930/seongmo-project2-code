@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.java.ecommerce.crm.dao.QnaDAO">
+    
+    <select id="qnaAllSelect" resultType="QnaDTO" parameterType="int">
+        SELECT
+        q.qna_id,
+        q.qna_user_id,
+        q.qna_title,
+        q.qna_content,
+        q.status,
+        q.is_secret,
+        q.created_at as qnaCreatedAt,
+        l.location_name,
+        u.username,
+        u.name,
+        a.answer_content,
+        a.created_at as answerCreatedAt
+        FROM qna q
+        JOIN location l ON l.location_id = q.location_id
+        JOIN `user` u ON u.user_id = q.qna_user_id
+        LEFT JOIN qna_answer a ON a.qna_id = q.qna_id
+        WHERE q.location_id = #{locationId}
+    </select>
+
+    <insert id="qnaregister" parameterType="QnaDTO">
+        INSERT INTO qna (
+        qna_user_id,
+        qna_title,
+        qna_content,
+        location_id,
+        is_secret
+        ) VALUES
+        (#{qnaUserId}, #{qnaTitle}, #{qnaContent},#{locationId}, #{isSecret});
+    </insert>
+
+    <insert id="qnaAnswerInsert" parameterType="QnaDTO">
+        INSERT INTO qna_answer (
+            qna_id,
+            answer_content,
+            answer_user_id,
+            created_at
+        ) VALUES (
+            #{qnaId},
+            #{answerContent},
+            #{answerUserId},
+            NOW()
+        )
+    </insert>
+
+    <update id="updateStatusToDone" parameterType="int">
+        UPDATE qna
+        SET status = 'DONE'
+        WHERE qna_id = #{qnaId}
+    </update>
+
+    <select id="findHostId" parameterType="int" resultType="int">
+        SELECT user_id
+        FROM location
+        WHERE location_id = #{locationId}
+        LIMIT 1
+    </select>
+
+    <select id="findQnaUserId" parameterType="int" resultType="int">
+        SELECT qna_user_id
+        FROM qna
+        WHERE qna_id = #{qnaId}
+        LIMIT 1
+    </select>
+
+    <select id="myWriteQna" resultType="QnaDTO" parameterType="int">
+        SELECT
+        q.qna_id,
+        q.qna_user_id,
+        q.qna_title,
+        q.qna_content,
+        q.status,
+        q.is_secret,
+        q.created_at AS qnaCreatedAt,
+        u.user_id, qa.answer_content,
+        qa.created_at AS answerCreatedAt,
+        l.location_name
+        FROM qna q
+        JOIN user u
+        ON q.qna_user_id = u.user_id
+        LEFT JOIN qna_answer qa using (qna_id)
+        JOIN location l USING (location_id)
+        where u.user_id = #{userId}
+    </select>
+    
+    <select id="countQnaWait" parameterType="int" resultType="int">
+        SELECT COUNT(*)
+        FROM qna
+        WHERE location_id = #{locationId}
+        AND status = 'WAIT';
+    </select>
+
+
+</mapper>

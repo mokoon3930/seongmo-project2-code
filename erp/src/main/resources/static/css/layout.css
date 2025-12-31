@@ -1,0 +1,230 @@
+/* =========================================
+   1. 기본 초기화 (Reset & Base)
+   ========================================= */
+:root {
+  --header-height: 60px;
+  --sidebar-width: 250px;
+  --primary-color: #34495e; /* 진한 남색 (사이드바) */
+  --accent-color: #3498db; /* 밝은 파란색 (포인트) */
+  --bg-color: #f4f6f9; /* 연한 회색 (본문 배경) */
+  --text-color: #333;
+  --border-color: #ddd;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  font-family: "Pretendard", -apple-system, BlinkMacSystemFont, system-ui,
+    Roboto, sans-serif;
+  color: var(--text-color);
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+  transition: 0.2s;
+}
+
+ul,
+li {
+  list-style: none;
+}
+
+/* =========================================
+   2. 헤더 스타일 (Header)
+   ========================================= */
+.layout-header {
+  width: 100%;
+  height: var(--header-height);
+  background-color: #fff;
+  border-bottom: 1px solid var(--border-color);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  z-index: 1000;
+  position: relative; /* 그림자 위로 띄우기 위해 */
+}
+
+.header-inner {
+  max-width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: space-between; /* 로고는 왼쪽, 메뉴는 오른쪽 */
+  align-items: center;
+  padding: 0 20px;
+}
+
+.header-inner h1 a {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--accent-color);
+}
+
+/* 헤더 오른쪽 링크들 (마이페이지, 로그인) */
+.header-inner > div {
+  margin-left: 20px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #666;
+  display: flex;
+  gap: 10px;
+}
+
+.header-inner > div a:hover {
+  color: var(--accent-color);
+}
+
+button.mypage-button {
+  background: none;
+  border: none;
+  padding: 2px 5px;
+  text-decoration: none;
+  color: inherit;
+  transition: 0.2s ease;
+  font-size: 0.95rem;
+  font-weight: 600;
+  font-family: "Pretendard", -apple-system, BlinkMacSystemFont, system-ui,
+    Roboto, sans-serif;
+}
+
+button.mypage-button:hover {
+  color: var(--accent-color);
+  box-shadow: 0 0 2px 1px var(--accent-color);
+  border-radius: 8px;
+}
+
+.logout-button {
+  background: none;
+  border: none;
+  padding: 2px 5px;
+  text-decoration: none;
+  color: inherit;
+  transition: 0.2s ease;
+  font-size: 0.95rem;
+  font-weight: 600;
+  font-family: "Pretendard", -apple-system, BlinkMacSystemFont, system-ui,
+    Roboto, sans-serif;
+}
+
+button.logout-button:hover {
+  color: red;
+  box-shadow: 0 0 2px 1px red;
+  border-radius: 8px;
+}
+
+/* =========================================
+   3. 레이아웃 바디 (Flex Container)
+   ========================================= */
+.layout-body {
+  display: flex; /* 사이드바와 콘텐츠를 가로로 배치 */
+  width: 100%;
+  /* 전체 높이에서 헤더 높이를 뺀 만큼 꽉 채움 */
+  height: calc(100vh - var(--header-height));
+  overflow: hidden; /* 전체 스크롤 방지 (내부 스크롤 사용) */
+}
+
+/* =========================================
+   4. 사이드바 스타일 (Sidebar) - 수정본
+   ========================================= */
+.layout-sidebar {
+  width: var(--sidebar-width);
+  background-color: var(--primary-color);
+  color: #ecf0f1;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  overflow-y: auto;
+  user-select: none; /* 드래그 방지 */
+}
+
+.sidebar {
+  padding-top: 10px;
+}
+
+/* 메뉴 그룹 */
+.menu-group {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* 클릭할 제목 영역 */
+.menu-title {
+  padding: 15px 20px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between; /* 제목과 화살표 양끝 배치 */
+  align-items: center;
+  transition: background 0.2s;
+}
+
+.menu-title:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.menu-title h3 {
+  font-size: 0.9rem;
+  margin: 0; /* 기존 마진 제거 */
+  color: #ecf0f1;
+  font-weight: 600;
+}
+
+/* 화살표 아이콘 */
+.toggle-icon {
+  font-size: 0.7rem;
+  transition: transform 0.3s;
+  color: #bdc3c7;
+}
+
+/* 실제 메뉴 리스트 (평소엔 숨김!) */
+.menu-list {
+  display: none;
+  background-color: rgba(0, 0, 0, 0.2); /* 약간 더 어두운 배경 */
+}
+
+.menu-list a {
+  display: block;
+  padding: 12px 20px 12px 35px; /* 들여쓰기 */
+  font-size: 0.9rem;
+  color: #bdc3c7;
+  text-decoration: none;
+  border-left: 3px solid transparent;
+}
+
+.menu-list a:hover {
+  color: #fff;
+  border-left-color: var(--accent-color);
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+/* =========================================
+   [Active 상태] - 자바스크립트로 제어
+   ========================================= */
+
+/* active 클래스가 붙으면 메뉴를 보여준다 */
+.menu-group.active .menu-list {
+  display: block;
+}
+
+/* active 상태일 때 화살표 회전 */
+.menu-group.active .toggle-icon {
+  transform: rotate(180deg);
+}
+
+/* active 상태일 때 제목 색상 강조 */
+.menu-group.active .menu-title h3 {
+  color: var(--accent-color);
+}
+
+/* =========================================
+   5. 메인 콘텐츠 영역 (Content)
+   ========================================= */
+.layout-content {
+  flex-grow: 1; /* 남은 공간을 모두 차지 */
+  background-color: var(--bg-color);
+  padding: 30px;
+  overflow-y: auto; /* 내용이 많으면 본문만 스크롤 */
+}

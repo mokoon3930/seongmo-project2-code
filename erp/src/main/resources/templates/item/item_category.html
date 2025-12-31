@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+
+<th:block layout:fragment="css">
+    <link rel="stylesheet" th:href="@{/css/item/item.css}">
+</th:block>
+
+<div layout:fragment="content">
+
+    <div class="erp-card">
+
+        <div class="card-header">
+            <h2>물품 카테고리 관리 (Category Management)</h2>
+        </div>
+
+        <table class="styled-table">
+            <thead>
+            <tr>
+                <th style="width: 150px;">카테고리 ID</th>
+                <th>카테고리 명</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:if="${vo.isEmpty()}">
+                <td colspan="2" style="text-align: center; padding: 30px;">
+                    등록된 카테고리가 없습니다.
+                </td>
+            </tr>
+
+            <tr th:each="item : ${vo}">
+                <td th:text="${item.icId}">IC_001</td>
+                <td class="text-left">
+                    <a th:href="@{/item/category(icId=${item.icId})}" class="category-link">
+                        <span th:text="${item.category}">전자제품</span>
+                        <i class="material-icons arrow-icon">👉</i>
+                    </a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+        <div class="bottom-actions">
+            <button type="button" class="btn-create" onclick="openCreateModal()">
+                📂 카테고리 생성
+            </button>
+        </div>
+
+    </div> <div id="createCategoryModal" class="modal-overlay hidden">
+    <div class="modal-content" style="width: 400px;">
+
+        <div class="modal-header">
+            <h3>새 카테고리 생성</h3>
+            <button type="button" class="close-btn" onclick="closeCreateModal()">&times;</button>
+        </div>
+
+        <div class="modal-body">
+            <form th:action="@{/item/created_category}" method="post">
+
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
+                <div style="margin-bottom: 30px;">
+                    <label class="form-label">카테고리 명</label>
+                    <input type="text" name="category" class="form-input"
+                           placeholder="예: 가전제품" required autofocus>
+                </div>
+
+                <div class="modal-footer-actions">
+                    <button type="button" class="btn-close" onclick="closeCreateModal()">취소</button>
+                    <button type="submit" class="btn-create-confirm">등록</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+</div>
+
+<th:block layout:fragment="script">
+    <script>
+        function openCreateModal() {
+            document.getElementById('createCategoryModal').classList.remove('hidden');
+            // 모달 열리면 입력창에 포커스 (편의성)
+            setTimeout(() => {
+                document.querySelector('#createCategoryModal input[name="category"]').focus();
+            }, 100);
+        }
+
+        function closeCreateModal() {
+            document.getElementById('createCategoryModal').classList.add('hidden');
+            // 입력창 비우기
+            document.querySelector('#createCategoryModal input[name="category"]').value = '';
+        }
+
+        // 배경 클릭 시 닫기
+        document.getElementById('createCategoryModal').addEventListener('click', function(e) {
+            if (e.target === this) closeCreateModal();
+        });
+    </script>
+</th:block>
+</html>

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+
+<th:block layout:fragment="css">
+    <link rel="stylesheet" th:href="@{/css/fm/rental_fee.css}">
+</th:block>
+
+<div layout:fragment="content">
+    
+    <div class="erp-card">
+        
+        <div class="card-header">
+            <h2>임대료 조회 (Rental Fee)</h2>
+        </div>
+
+        <div class="search-container">
+            <form th:action="@{/rentalFee}" method="get" class="search-form">
+                <input type="text" name="keyword" class="form-input" 
+                       placeholder="건물 이름 검색" th:value="${param.keyword}" />
+                <button type="submit" class="btn-search">검색</button>
+            </form>
+        </div>
+
+        <table class="styled-table">
+            <thead>
+                <tr>
+                    <th>건물ID</th>
+                    <th>건물 이름</th>
+                    <th>임대 시작일</th>
+                    <th>임대 마감일</th>
+                    <th>임대 비용</th>
+                    <th>임대 기간</th>
+                    <th>광고 수수료</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:if="${dto.isEmpty()}">
+                    <td colspan="7" style="text-align: center;">등록된 임대 내역이 없다!</td>
+                </tr>
+
+                <tr th:each="item : ${dto}"> <td th:text="${item.locationId}">LOC001</td>
+                    <td th:text="${item.locationName}" style="font-weight: bold;">강남 1호점</td>
+                    <td th:text="${item.rentStart}">2025-01-01</td>
+                    <td th:text="${item.rentEnd}">2025-12-31</td>
+                    
+                    <td class="text-right money" 
+                        th:text="${#numbers.formatInteger(item.rentalFee, 0, 'COMMA') + '원'}">1,000,000원</td>
+                    
+                    <td th:text="${item.rentDays} + '일'">365일</td>
+                    
+                    <td class="text-right money"
+                        th:text="${#numbers.formatInteger(item.adCost, 0, 'COMMA') + '원'}">50,000원</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <nav class="pagination-container">
+            <ul class="pagination">
+                <li class="page-item" th:classappend="${!paging.prev} ? ' disabled'">
+                    <a class="page-link"
+                       th:href="@{/rentalFee(keyword=${param.keyword}, page=${paging.startPage - 1})}">
+                       Previous
+                    </a>
+                </li>
+
+                <li th:if="${paging.endPage > 0}"
+                    th:each="pageNum : ${#numbers.sequence(paging.startPage, paging.endPage)}"
+                    class="page-item"
+                    th:classappend="${pageNum == paging.page} ? ' active'">
+                    <a class="page-link"
+                       th:href="@{/rentalFee(keyword=${param.keyword}, page=${pageNum})}"
+                       th:text="${pageNum}">1</a>
+                </li>
+
+                <li class="page-item" th:classappend="${!paging.next} ? ' disabled'">
+                    <a class="page-link"
+                       th:href="@{/rentalFee(keyword=${param.keyword}, page=${paging.endPage + 1})}">
+                       Next
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+    </div> </div>
+</html>

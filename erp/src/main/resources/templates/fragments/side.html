@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html
+  lang="en"
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+>
+  <body>
+    <div th:fragment="side" class="layout-sidebar">
+      <div class="sidebar">
+        <div class="menu-group">
+          <div class="menu-title">
+            <h3>고객 관리(CRM)</h3>
+            <span class="toggle-icon">▼</span>
+          </div>
+          <div class="menu-list">
+            <a th:href="@{/location}">공간 등록 승인</a>
+            <a th:href="@{/location-list}">등록 공간 조회</a>
+            <a th:href="@{/user}">고객 필터 조회</a>
+          </div>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <h3>인적 자원 관리(HRM)</h3>
+            <span class="toggle-icon">▼</span>
+          </div>
+          <div class="menu-list">
+            <a th:href="@{/attendanceCheck}">출퇴근 체크 페이지</a>
+              <a th:href="@{/allVacation}"> 사원 휴가 조회</a>
+            <a th:href="@{/empAddForm}" sec:authorize="hasAnyRole('ADMIN')"
+              >사원 추가 페이지(관리자용)</a
+            >
+            <a th:href="@{/employeeList}" sec:authorize="hasAnyRole('ADMIN')"
+              >사원 목록 페이지(관리자용)</a
+            >
+          </div>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <h3>재무 관리(FM)</h3>
+            <span class="toggle-icon">▼</span>
+          </div>
+          <div class="menu-list">
+            <a th:href="@{/allSalary}">직원 급여 조회</a>
+            <a th:href="@{/rentalFee}">임대로 조회</a>
+            <a th:href="@{/financial}">수입 / 지출 관리</a>
+          </div>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <h3>일정 관리(SM)</h3>
+            <span class="toggle-icon">▼</span>
+          </div>
+          <div class="menu-list">
+            <a th:href="@{/calendar}">캘린더</a>
+          </div>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <h3>프로젝트 관리(PM)</h3>
+            <span class="toggle-icon">▼</span>
+          </div>
+          <div class="menu-list">
+            <a th:href="@{/project_add}">프로젝트 생성</a>
+            <a th:href="@{/project_list}">프로젝트 조회</a>
+          </div>
+        </div>
+
+          <div class="menu-group">
+              <div class="menu-title">
+                  <h3>상품관리</h3>
+                  <span class="toggle-icon">▼</span>
+              </div>
+              <div class="menu-list">
+                  <a th:href="@{/item/item_category}">아이템 관리</a>
+                  <a th:href="@{/transport}">운송 차량 관리</a>
+              </div>
+          </div>
+      </div>
+
+      <script>
+        document.addEventListener("DOMContentLoaded", function () {
+          const titles = document.querySelectorAll(".menu-title");
+
+          titles.forEach((title) => {
+            title.addEventListener("click", function () {
+              // 1. 클릭한 제목의 부모 요소(.menu-group)를 찾는다.
+              const group = this.parentElement;
+
+              // 2. 해당 그룹에 'active' 클래스를 줬다 뺐다(toggle) 한다.
+              group.classList.toggle("active");
+            });
+          });
+        });
+      </script>
+    </div>
+  </body>
+</html>

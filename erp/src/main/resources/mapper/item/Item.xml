@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.java.erp.pm.dao.ItemDAO">
+    <!-- 아이템 카테고리 조회 -->
+    <select id="selectAll" resultType="ic">
+        select * from item_category;
+    </select>
+
+    <!-- 아이템 세부조회 -->
+    <select id="selectItem" resultType="PmDTO" parameterType="Integer">
+        select item_info_id, item_name, ic_id, item_price, rent_fee, IFNULL(total_qty,0) as total_qty
+        from item_info
+        left join item_qty using(item_info_id)
+        where ic_id = #{icId};
+    </select>
+
+    <!-- 아이템 구메 페이지 -->
+    <select id="itemAdd" resultType="PmDTO" parameterType="Integer">
+        select * from item_info where item_info_id = #{itemInfoID};
+    </select>
+
+    <!-- 아이템 구메 post -->
+    <insert id="postItemAdd" parameterType="int">
+        insert into item ( item_info_id, item_store_date )
+        values ( #{itemInfoId}, NOW() );
+    </insert>
+
+    <!-- 새 카테고리 생성 -->
+    <insert id="createdCategory" parameterType="ic">
+        insert into item_category ( category )
+        values ( #{category} );
+    </insert>
+
+    <!-- 새 아이템 생성 -->
+    <insert id="createdItem" parameterType="CreatedItemDTO">
+        insert into item_info ( item_name, item_price, rent_fee, ic_id )
+        values ( #{itemName}, #{itemPrice}, #{rentFee}, #{icId} );
+    </insert>
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+

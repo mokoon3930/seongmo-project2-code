@@ -1,0 +1,3 @@
+ecommerce/src/main/resources/application-local.yml
+ecommerce/src/main/resources/application.properties
+*.properties

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <body>
+    <div th:fragment="historyContent">
+      <h3
+        style="
+          color: #34495e;
+          margin-bottom: 15px;
+          border-left: 5px solid #2ecc71;
+          padding-left: 10px;
+        "
+      >
+        급여 지급 내역
+      </h3>
+
+      <table class="styled-table" style="width: 100%">
+        <thead>
+          <tr>
+            <th>지급 일자</th>
+            <th>급여 ID</th>
+            <th>공제 금액 (3.3%)</th>
+            <th>실 수령액</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:if="${salary.isEmpty()}">
+            <td colspan="4" style="text-align: center; padding: 20px">
+              지급 내역이 없습니다.
+            </td>
+          </tr>
+          <tr th:each="salary : ${salary}">
+            <td th:text="${salary.salaryDate}">2025-11-25</td>
+            <td th:text="${salary.salaryId}">SAL_001</td>
+
+            <td
+              class="text-right money"
+              th:text="${#numbers.formatInteger(salary.deduction, 0, 'COMMA') + '원'}"
+            >
+              33,000원
+            </td>
+            <td
+              class="text-right money"
+              style="font-weight: bold; color: #27ae60"
+              th:text="${#numbers.formatInteger(salary.totalSalary, 0, 'COMMA') + '원'}"
+            >
+              2,500,000원
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </body>
+</html>
